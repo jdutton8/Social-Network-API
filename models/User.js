@@ -10,7 +10,7 @@ const userSchema = new Schema ({
         type: String,
         required: true,
         unique: true,
-        match: [/.+@.+\..+{2}/, 'Is not an email address']
+        match: [/.+@.+\..+/],
     },
     thoughts: [
         {

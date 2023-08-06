@@ -1,20 +1,28 @@
+const { ObjectId } = require('mongoose').Types;
 const { Thought, User } = require('../models');
+
+
+var createdDate = new Date;
+let day = createdDate.getDate();
+let month = createdDate.getMonth() + 1;
+let year = createdDate.getFullYear();
+createdDate = month+"/"+day+"/"+year;
 
 module.exports = {
   // Get all thoughts
   async getThoughts(req, res) {
     try {
       const thoughts = await Thought.find().populate('reactions');
-      res.json(thoughts);
+      return res.json(thoughts);
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
   // Get a thought
   async getSingleThought(req, res) {
     try {
       const thought = await Thought.findOne({ _id: req.params.thoughtId })
-        .select('-__v');
+        .populate('reactions');
 
       if (!thought) {
         return res.status(404).json({ message: 'No thought with that ID' });
@@ -68,4 +76,42 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+  async createReaction(req,res) {
+    try {
+        const thought = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $addToSet: { reactions: req.body } },
+            { runValidators: true, new: true }
+          );
+    
+          if (!thought) {
+            return res
+              .status(404)
+              .json({ message: 'This thought does not exist.' });
+          }
+    
+          res.json(thought);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+},
+async deleteReaction(req, res) {
+  try {
+      const thought = await Thought.findOneAndUpdate(
+          { _id: req.params.thoughtId },
+          { $pull: { reactions: { reactionId: req.params.reactionId } } },
+          { runValidators: true, new: true }
+        );
+  
+        if (!thought) {
+          return res
+            .status(404)
+            .json({ message: 'This thought does not exist.' });
+        }
+  
+        res.json(thought);
+  } catch (err) {
+      res.status(500).json(err);
+  }
+},
 };
