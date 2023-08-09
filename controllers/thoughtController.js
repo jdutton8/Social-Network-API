@@ -36,7 +36,17 @@ module.exports = {
   // Create a thought
   async createThought(req, res) {
     try {
-      const thought = await Thought.create(req.body);
+      const user = await User.findOne(
+        { _id: req.params.userId },
+      );
+      const name = user.username;
+      const thought = await Thought.create(
+        {...req.body,
+        username: name,
+      });
+      user.thoughts.push(thought._id);
+      await user.save();
+      
       res.json(thought);
     } catch (err) {
       console.log(err);
