@@ -21,7 +21,7 @@
  Begin by running npm i to install all dependencies. Next, run npm start to start the server. Then the user can open Insomnia to access the data. 
  
 ## Licenses
- This project is licensed under MIT.git status
+ This project is licensed under MIT.
 
 ## Questions
  Please direct any questions to:
