@@ -1,14 +1,14 @@
 // ObjectId() method for converting userId string into an ObjectId for querying database
-const { ObjectId } = require('mongoose').Types;
-const User = require('../models/User');
-const Thought = require('../models/Thought');
+//const { ObjectId } = require('mongoose').Types;
+const { Thought, User } = require('../models');
 
 module.exports = {
   // Get all users
   async getUsers(req, res) {
     try {
       const users = await User.find();
-      res.json(users);
+      return res.json(users);
+     
     } catch (err) {
      res.status(500).json(err);
     }
@@ -33,7 +33,7 @@ module.exports = {
   async createUser(req, res) {
     try {
       const user = await User.create(req.body);
-      res.json(user);
+      return res.json(user);
     } catch (err) {
       res.status(500).json(err);
     }
@@ -44,7 +44,7 @@ module.exports = {
     try {
         const user = await User.findOneAndUpdate(
             { _id: req.params.userId },
-            req.body,
+            { $set: req.body },
             { new: true }
         );
         if (!user) {
@@ -84,9 +84,7 @@ module.exports = {
       );
 
       if (!user) {
-        return res
-          .status(404)
-          .json({ message: 'No user found with that ID :(' })
+        return res.status(404).json({ message: 'No user found with that ID :(' })
       }
 
       res.json(user);
