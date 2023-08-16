@@ -1,4 +1,4 @@
-// const { ObjectId } = require('mongoose').Types;
+const { ObjectId } = require('mongoose').Types;
 const { Thought, User } = require('../models');
 
 
@@ -36,20 +36,18 @@ module.exports = {
   // Create a thought
   async createThought(req, res) {
     try {
-      const user = await User.findOne(
-        { _id: req.params.userId },
+      const thought = await Thought.create(req.body);
+      const user = await User.findOneAndUpdate(
+        {_id: req.body.userId},
+        {$push: { thoughts: thought._id}},
+        { new: true}
       );
-      const name = user.username;
-      const thought = await Thought.create(
-        {...req.body,
-        username: name,
-      });
-      user.thoughts.push(thought._id);
-      await user.save();
+      if (!user) {
+        return res.status(404).json({ message: 'No user with this id!'});
+      }
       
       res.json(thought);
     } catch (err) {
-      console.log(err);
       return res.status(500).json(err);
     }
   },
@@ -62,8 +60,12 @@ module.exports = {
         return res.status(404).json({ message: 'No thought with that ID' });
       }
 
-      await User.deleteMany({ _id: { $in: thought.users } });
-      res.json({ message: 'Thought and user deleted!' });
+      const user = await User.findOneAndUpdate(
+        {username: thought.username},
+        {$pull: { thoughts: thought._id }},
+        {new: true}
+      );
+      res.json(thought);
     } catch (err) {
       res.status(500).json(err);
     }

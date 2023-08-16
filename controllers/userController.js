@@ -1,5 +1,5 @@
 // ObjectId() method for converting userId string into an ObjectId for querying database
-//const { ObjectId } = require('mongoose').Types;
+const { ObjectId } = require('mongoose').Types;
 const { Thought, User } = require('../models');
 
 module.exports = {
