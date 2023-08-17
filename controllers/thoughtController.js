@@ -2,12 +2,6 @@ const { ObjectId } = require('mongoose').Types;
 const { Thought, User } = require('../models');
 
 
-//var createdDate = new Date;
-//let day = createdDate.getDate();
-//let month = createdDate.getMonth() + 1;
-//let year = createdDate.getFullYear();
-//createdDate = month+"/"+day+"/"+year;
-
 module.exports = {
   // Get all thoughts
   async getThoughts(req, res) {

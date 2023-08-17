@@ -17,6 +17,8 @@
 ## Usage
  The user needs to use Insomnia to interact with this application. 
 
+ ![Screenshot of application](./images/insomnia.png)
+
 ## Installation
  Begin by running npm i to install all dependencies. Next, run npm start to start the server. Then the user can open Insomnia to access the data. 
  
